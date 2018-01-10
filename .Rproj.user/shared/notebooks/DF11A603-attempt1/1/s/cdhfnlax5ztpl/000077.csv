@@ -1,0 +1,6 @@
+"0","# as shown in the exploratory data analysis, we should do some transformations as many linear regression assumptions are violated"
+"0","# have to add 0.01 to transformed x-variables since we cannot log (0)"
+"0","# x-variables to transform (non-linearity): log(Iws+0.01), log(precipitation+0.01), log(Iprec+0.01)"
+"0","# y-varable to transform (non-constant variance): log(PM_US.Post)"
+"0","# try with these transformations"
+"0","plot(x = month, y = log(PM_US.Post), main=""Month VS log PM2.5 Concentration"", xlab=""Month"", ylab=""log PM2.5 Concentration (ug/m^3)"")"

@@ -1,0 +1,1 @@
+"0","plot(x = TEMP, y = PM_US.Post, main=""Tempeature VS PM2.5 Concentration"", xlab=""Temperature (ºC)"", ylab=""PM2.5 Concentration (ug/m^3)"")"

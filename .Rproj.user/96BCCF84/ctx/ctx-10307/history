@@ -1,0 +1,512 @@
+boxplot(PM_US.Post~cbwd,data=df, main="Combined Wind Direction VS PM2.5 Concentration", xlab="Combined Wind Direction", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = Iws, y = PM_US.Post, main="Cumulated Wind Speed VS PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = precipitation, y = PM_US.Post, main="Hourly Percipitation VS PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = Iprec, y = PM_US.Post, main="Hourly Percipitation VS PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = month, y = PM_US.Post, main="Month VS PM2.5 Concentration", xlab="Month", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = day, y = PM_US.Post, main="Day VS PM2.5 Concentration", xlab="Day", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = hour, y = PM_US.Post, main="Hour VS PM2.5 Concentration", xlab="Hour", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~season,data=df, main="Season VS PM2.5 Concentration", xlab="Season (Spring, Summer, Fall, Winter)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = DEWP, y = PM_US.Post, main="Dew Point VS PM2.5 Concentration", xlab="Dew Point (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = HUMI, y = PM_US.Post, main="Humidity VS PM2.5 Concentration", xlab="Humidity (%)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = TEMP, y = PM_US.Post, main="Temperature VS PM2.5 Concentration", xlab="Temperature (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~cbwd,data=df, main="Combined Wind Direction VS PM2.5 Concentration", xlab="Combined Wind Direction", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = Iws, y = PM_US.Post, main="Cumulated Wind Speed VS PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = precipitation, y = PM_US.Post, main="Hourly Percipitation VS PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = Iprec, y = PM_US.Post, main="Hourly Percipitation VS PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="PM2.5 Concentration (ug/m^3)")
+reg1= lm(PM_US.Post ~ year+month+day+hour+season+DEWP+HUMI+PRES+TEMP+cbwd+Iws+precipitation+Iprec, data = df)
+reg1= lm(PM_US.Post ~ year+month+day+hour+season+DEWP+HUMI+PRES+TEMP+Iws+precipitation+Iprec, data = df)
+df = df[complete.cases(df),]
+df = df[!complete.cases(df),]
+df = df_all[year == 2012 | year == 2013 | year == 2014 | year == 2015,]
+df = df[, !(colnames(df) %in% c("PM_Jingan","PM_Xuhui"))]
+df = df[complete.cases(df),]
+df_all = read.csv('datasets/ShanghaiPM20100101_20151231.csv')
+df_all = read.csv('datasets/ShanghaiPM20100101_20151231.csv')
+attach(df_all)
+df = df_all[year == 2012 | year == 2013 | year == 2014 | year == 2015,]
+df = df[, !(colnames(df) %in% c("PM_Jingan","PM_Xuhui"))]
+df = df[complete.cases(df),]
+plot(x = month, y = PM_US.Post, main="Month VS PM2.5 Concentration", xlab="Month", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = day, y = PM_US.Post, main="Day VS PM2.5 Concentration", xlab="Day", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = hour, y = PM_US.Post, main="Hour VS PM2.5 Concentration", xlab="Hour", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~season,data=df, main="Season VS PM2.5 Concentration", xlab="Season (Spring, Summer, Fall, Winter)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = DEWP, y = PM_US.Post, main="Dew Point VS PM2.5 Concentration", xlab="Dew Point (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = HUMI, y = PM_US.Post, main="Humidity VS PM2.5 Concentration", xlab="Humidity (%)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = TEMP, y = PM_US.Post, main="Temperature VS PM2.5 Concentration", xlab="Temperature (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~cbwd,data=df, main="Combined Wind Direction VS PM2.5 Concentration", xlab="Combined Wind Direction", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = Iws, y = PM_US.Post, main="Cumulated Wind Speed VS PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = precipitation, y = PM_US.Post, main="Hourly Percipitation VS PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = Iprec, y = PM_US.Post, main="Hourly Percipitation VS PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="PM2.5 Concentration (ug/m^3)")
+reg1= lm(PM_US.Post ~ year+month+day+hour+season+DEWP+HUMI+PRES+TEMP+Iws+precipitation+Iprec, data = df)
+summary(reg1)
+df_some = df_all[year == 2012 | year == 2013 | year == 2014 | year == 2015,]
+df_some = df_some[, !(colnames(df) %in% c("PM_Jingan","PM_Xuhui"))]
+df = df_some[complete.cases(df_some),]
+View(df)
+View(df)
+df_all = read.csv('datasets/ShanghaiPM20100101_20151231.csv')
+df_all = read.csv('datasets/ShanghaiPM20100101_20151231.csv')
+attach(df_all)
+df_some = df_all[year == 2012 | year == 2013 | year == 2014 | year == 2015,]
+df_some = df_some[, !(colnames(df) %in% c("PM_Jingan","PM_Xuhui"))]
+df_incomplete = df_some[!complete.cases(df_some),]
+df = df_some[complete.cases(df_some),]
+library(arm)
+library(pROC)
+df_all = read.csv('datasets/ShanghaiPM20100101_20151231.csv')
+df_all = read.csv('datasets/ShanghaiPM20100101_20151231.csv')
+attach(df_all)
+df_some = df_all[year == 2012 | year == 2013 | year == 2014 | year == 2015,]
+df_some = df_some[, !(colnames(df) %in% c("PM_Jingan","PM_Xuhui"))]
+df_incomplete = df_some[!complete.cases(df_some),]
+df_some = df_some[, !(colnames(df_all) %in% c("PM_Jingan","PM_Xuhui"))]
+df_some = df_some[, !(colnames(df_some) %in% c("PM_Jingan","PM_Xuhui"))]
+df_incomplete = df_some[!complete.cases(df_some),]
+df = df_some[complete.cases(df_some),]
+df_some = df_some[, !(colnames(df_some) %in% c("PM_Jingan","PM_Xuhui"))]
+View(df_some)
+df_some = df_some[, !(colnames(df_all) %in% c("PM_Jingan","PM_Xuhui"))]
+df_all = df_all[year == 2012 | year == 2013 | year == 2014 | year == 2015,]
+all
+all
+all
+df_some = df_all[, !(colnames(df_all) %in% c("PM_Jingan","PM_Xuhui"))]
+df_incomplete = df_some[!complete.cases(df_some),]
+df = df_some[complete.cases(df_some),]
+df_some = df_all[year == 2012 | year == 2013 | year == 2014 | year == 2015,]
+df_all = read.csv('datasets/ShanghaiPM20100101_20151231.csv')
+attach(df_all)
+df_some = df_all[year == 2012 | year == 2013 | year == 2014 | year == 2015,]
+df_some = df_some[, !(colnames(df_some) %in% c("PM_Jingan","PM_Xuhui"))]
+df_incomplete = df_some[!complete.cases(df_some),]
+df = df_some[complete.cases(df_some),]
+plot(x = month, y = PM_US.Post, main="Month VS PM2.5 Concentration", xlab="Month", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = day, y = PM_US.Post, main="Day VS PM2.5 Concentration", xlab="Day", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = hour, y = PM_US.Post, main="Hour VS PM2.5 Concentration", xlab="Hour", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~season,data=df, main="Season VS PM2.5 Concentration", xlab="Season (Spring, Summer, Fall, Winter)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = DEWP, y = PM_US.Post, main="Dew Point VS PM2.5 Concentration", xlab="Dew Point (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = HUMI, y = PM_US.Post, main="Humidity VS PM2.5 Concentration", xlab="Humidity (%)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = TEMP, y = PM_US.Post, main="Temperature VS PM2.5 Concentration", xlab="Temperature (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~cbwd,data=df, main="Combined Wind Direction VS PM2.5 Concentration", xlab="Combined Wind Direction", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = Iws, y = PM_US.Post, main="Cumulated Wind Speed VS PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = precipitation, y = PM_US.Post, main="Hourly Percipitation VS PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = Iprec, y = PM_US.Post, main="Hourly Percipitation VS PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="PM2.5 Concentration (ug/m^3)")
+contVars = df[,1:5]
+contVars = df[,2:6]
+cor(contVars)
+contVars = df[,2:6 + 7:8 +]
+cont <- c(2:6, 7:8, 9:)
+cont <- c(2:6, 7:8, 9:11)
+contVars = df[cont]
+cont <- c(2:6, 8:11, 12:14)
+contVars = df[cont]
+cont <- c(2:6, 8:11, 13:15)
+contVars = df[cont]
+cor(contVars)
+contVars2 = df[cont2]
+cont2 <- c(2:6, 8:9, 11, 13:15)
+contVars2 = df[cont2]
+cor(contVars2)
+contVars3 = df[cont3]
+cont3 <- c(2:6, 9, 11, 13:15)
+contVars3 = df[cont3]
+cor(contVars3)
+reg1= lm(PM_US.Post ~ year+month+day+hour+season+DEWP+HUMI+PRES+TEMP+as.factor(cbwd)+Iws+precipitation+Iprec, data = df)
+summary(reg1)
+reg1= lm(PM_US.Post ~ year+month+day+hour+as.factor(season)+DEWP+HUMI+PRES+TEMP+as.factor(cbwd)+Iws+precipitation+Iprec, data = df)
+summary(reg1)
+reg1= lm(PM_US.Post ~ year+month+day+hour+season+DEWP+HUMI+PRES+TEMP+as.factor(cbwd)+Iws+precipitation+Iprec, data = df)
+summary(reg1)
+reg1= lm(PM_US.Post ~ year+month+day+hour+season+DEWP+HUMI+PRES+TEMP+Iws+precipitation+Iprec, data = df)
+summary(reg1)
+reg_nopressuredp = lm(PM_US.Post ~ year+month+day+hour+season+HUMI+TEMP+Iws+precipitation+Iprec, data = df)
+anova(reg1, reg_nopressuredp)
+reg_nopressuredp = lm(PM_US.Post ~ year+month+day+hour+season+DEWP+HUMI+TEMP+Iws+precipitation+Iprec, data = df)
+anova(reg1, reg_nopressuredp)
+reg_nopressure = lm(PM_US.Post ~ year+month+day+hour+season+DEWP+HUMI+TEMP+Iws+precipitation+Iprec, data = df)
+anova(reg1, reg_nopressuredp)
+reg_nodewpoint = lm(PM_US.Post ~ year+month+day+hour+season+HUMI+PRES+TEMP+Iws+precipitation+Iprec, data = df)
+anova(reg1, reg_nopressure)
+reg_nodays = lm(PM_US.Post ~ year+month+hour+season+HUMI+PRES+TEMP+Iws+precipitation+Iprec, data = df)
+anova(reg1, reg_nodays)
+reg1= lm(PM_US.Post ~ year+month+day+hour+as.factor(season)+DEWP+HUMI+PRES+TEMP+as.factor(cbwd)+Iws+precipitation+Iprec, data = df)
+summary(reg1)
+cont <- c(2:6, 8:11, 13:15)
+contVars = df[cont]
+cor(contVars)
+# multicollinearity (>0.8) between: pressure & dew point, pressure & temperature
+# since pressure has multicollinearity with 2 other variables, we should remove pressure
+cont2 <- c(2:6, 8:9, 11, 13:15)
+contVars2 = df[cont2]
+cor(contVars2)
+# there still seems to be multicollinearity between dew point & temperature
+# we saw from the linear regression above that dew point has a high p-value, so we should remove that
+cont3 <- c(2:6, 9, 11, 13:15)
+contVars3 = df[cont3]
+cor(contVars3)
+reg_nopressure = lm(PM_US.Post ~ year+month+day+hour+season+DEWP+HUMI+TEMP+Iws+precipitation+Iprec, data = df)
+reg_nodewpoint = lm(PM_US.Post ~ year+month+day+hour+season+HUMI+PRES+TEMP+Iws+precipitation+Iprec, data = df)
+reg_nodays = lm(PM_US.Post ~ year+month+hour+season+HUMI+PRES+TEMP+Iws+precipitation+Iprec, data = df)
+anova(reg1, reg_nopressure)
+anova(reg1, reg_nodewpoint)
+anova(reg1, reg_nodays)
+reg_nopressure = lm(PM_US.Post ~ year+month+day+hour+as.factor(season)+DEWP+HUMI+TEMP+as.factor(cbwd)+Iws+precipitation+Iprec, data = df)
+reg_nodewpoint = lm(PM_US.Post ~ year+month+day+hour+as.factor(season)+HUMI+PRES+TEMP+as.factor(cbwd)+Iws+precipitation+Iprec, data = df)
+reg_nodays = lm(PM_US.Post ~ year+month+hour+HUMI+PRES+TEMP+as.factor(cbwd)+Iws+precipitation+Iprec, data = df)
+anova(reg1, reg_nopressure)
+anova(reg1, reg_nodewpoint)
+anova(reg1, reg_nodays)
+reg_nodays = lm(PM_US.Post ~ year+month+hour+as.factor(season)+HUMI+PRES+TEMP+as.factor(cbwd)+Iws+precipitation+Iprec, data = df)
+anova(reg1, reg_nopressure)
+anova(reg1, reg_nodewpoint)
+anova(reg1, reg_nodays)
+reg1= lm(PM_US.Post ~ year+month+day+hour+as.factor(season)+DEWP+HUMI+PRES+TEMP+as.factor(cbwd)+Iws+precipitation+Iprec, data = df)
+summary(reg1)
+reg_noPRES = lm(PM_US.Post ~ year + month + day + hour + as.factor(season) + DEWP + HUMI + TEMP + as.factor(cbwd) + Iws + precipitation + Iprec, data = df)
+reg_noDEWP = lm(PM_US.Post ~ year + month + day + hour + as.factor(season) + HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation + Iprec, data = df)
+reg_noDAYS = lm(PM_US.Post ~ year + month + hour + as.factor(season) + DEWP + HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation + Iprec, data = df)
+anova(reg1, reg_nopressure)
+anova(reg1, reg_nodewpoint)
+anova(reg1, reg_nodays)
+boxplot(PM_US.Post~as.factor(season),data=df, main="Season VS PM2.5 Concentration", xlab="Season (Spring, Summer, Fall, Winter)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = month, y = PM_US.Post, main="Month VS PM2.5 Concentration", xlab="Month", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = day, y = PM_US.Post, main="Day VS PM2.5 Concentration", xlab="Day", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = hour, y = PM_US.Post, main="Hour VS PM2.5 Concentration", xlab="Hour", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~as.factor(season),data=df, main="Season VS PM2.5 Concentration", xlab="Season (Spring, Summer, Fall, Winter)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = DEWP, y = PM_US.Post, main="Dew Point VS PM2.5 Concentration", xlab="Dew Point (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = HUMI, y = PM_US.Post, main="Humidity VS PM2.5 Concentration", xlab="Humidity (%)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = TEMP, y = PM_US.Post, main="Temperature VS PM2.5 Concentration", xlab="Temperature (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~cbwd,data=df, main="Combined Wind Direction VS PM2.5 Concentration", xlab="Combined Wind Direction", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = Iws, y = PM_US.Post, main="Cumulated Wind Speed VS PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = precipitation, y = PM_US.Post, main="Hourly Percipitation VS PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = Iprec, y = PM_US.Post, main="Hourly Percipitation VS PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="PM2.5 Concentration (ug/m^3)")
+reg_back1 <- step(reg1,direction="backward")
+summary(reg_back1)
+anova(reg1, reg_back1)
+reg_noDAYS = lm(PM_US.Post ~ year + month + hour + as.factor(season) + DEWP +
+HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+anova(reg1, reg_nodays)
+reg1= lm(PM_US.Post ~ year + month + day + hour + as.factor(season) +
+DEWP + HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec)
+summary(reg1)
+reg_noPRES = lm(PM_US.Post ~ year + month + day + hour + as.factor(season) +
+DEWP + HUMI + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec)
+reg_noDEWP = lm(PM_US.Post ~ year + month + day + hour + as.factor(season) +
+PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec
+reg_noDAYS = lm(PM_US.Post ~ year + month + hour + as.factor(season) + DEWP +
+reg1= lm(PM_US.Post ~ year + month + day + hour + as.factor(season) +
+DEWP + HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+summary(reg1)
+reg_noPRES = lm(PM_US.Post ~ year + month + day + hour + as.factor(season) +
+DEWP + HUMI + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+reg_noDEWP = lm(PM_US.Post ~ year + month + day + hour + as.factor(season) +
+PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+reg_noDAYS = lm(PM_US.Post ~ year + month + hour + as.factor(season) + DEWP +
+HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+anova(reg1, reg_nopressure)
+anova(reg1, reg_nodewpoint)
+anova(reg1, reg_nodays)
+reg_back1 <- step(reg1,direction="backward")
+summary(reg_back1)
+anova(reg1, reg_back1)
+reg_back2 <- step(reg_back1,direction="backward")
+reg_back2 <- step(reg_back1,direction="backward")
+summary(reg_back)
+reg_back2 <- step(reg_back1,direction="backward")
+reg_back2 <- step(reg_back1,direction="backward")
+reg_back1 <- step(reg1,direction="backward")
+reg_back2 <- step(reg_back1,direction="backward")
+reg_back1 <- step(reg1,direction="backward")
+cor(contVars)
+anova(reg1, reg_nodays)
+reg_noDAYS = lm(PM_US.Post ~ year + month + hour + as.factor(season) + DEWP +
+HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+anova(reg1, reg_nodays)
+anova(reg1, reg_noPRES)
+anova(reg1, reg_noDEWP)
+anova(reg1, reg_noDAYS)
+# regression with no pressure variable
+reg_noPRES = lm(PM_US.Post ~ year + month + day + hour + as.factor(season) +
+DEWP + HUMI + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+# regression with no dew point variable
+reg_noDEWP = lm(PM_US.Post ~ year + month + day + hour + as.factor(season) +
+HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+#regression with no temperature
+reg_noTEMP = lm(PM_US.Post ~ year + month + day + hour + as.factor(season) +
+DEWP + HUMI + PRES + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+# regression with no days
+reg_noDAYS = lm(PM_US.Post ~ year + month + hour + as.factor(season) +
+DEWP + HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+# do ANOVA f-test on each of the regressions (VS original regression)
+anova(reg1, reg_noPRES)
+anova(reg1, reg_noDEWP)
+anova(reg1, reg_noTEMP)
+anova(reg1, reg_noDAYS)
+plot(x = month, y = log(PM_US.Post), main="Month VS log PM2.5 Concentration", xlab="Month", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = day, y = log(PM_US.Post), main="Day VS PM2.5 Concentration", xlab="Day", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = hour, y = log(PM_US.Post), main="Hour VS PM2.5 Concentration", xlab="Hour", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~as.factor(season),data=df, main="Season VS log PM2.5 Concentration", xlab="Season (Spring, Summer, Fall, Winter)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = DEWP, y = log(PM_US.Post), main="Dew Point VS log PM2.5 Concentration", xlab="Dew Point (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = HUMI, y = log(PM_US.Post), main="Humidity VS PM2.5 Concentration", xlab="Humidity (%)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(TEMP), y = log(PM_US.Post), main="log Temperature VS log PM2.5 Concentration", xlab="log Temperature (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~cbwd,data=df, main="Combined Wind Direction VS log PM2.5 Concentration", xlab="Combined Wind Direction", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = Iws, y = log(PM_US.Post), main="Cumulated Wind Speed VS log PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = precipitation, y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = Iprec, y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = TEMP, y = log(PM_US.Post), main="Temperature VS log PM2.5 Concentration", xlab="Temperature (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~cbwd,data=df, main="Combined Wind Direction VS log PM2.5 Concentration", xlab="Combined Wind Direction", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iws), y = log(PM_US.Post), main="Cumulated Wind Speed VS log PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(precipitation), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iprec), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(TEMP), y = log(PM_US.Post), main="Temperature VS log PM2.5 Concentration", xlab="Temperature (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = month, y = log(PM_US.Post), main="Month VS log PM2.5 Concentration", xlab="Month", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = day, y = log(PM_US.Post), main="Day VS PM2.5 Concentration", xlab="Day", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = hour, y = log(PM_US.Post), main="Hour VS PM2.5 Concentration", xlab="Hour", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~as.factor(season),data=df, main="Season VS log PM2.5 Concentration", xlab="Season (Spring, Summer, Fall, Winter)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = DEWP, y = log(PM_US.Post), main="Dew Point VS log PM2.5 Concentration", xlab="Dew Point (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = HUMI, y = log(PM_US.Post), main="Humidity VS PM2.5 Concentration", xlab="Humidity (%)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = TEMP, y = log(PM_US.Post), main="Temperature VS log PM2.5 Concentration", xlab="Temperature (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~cbwd,data=df, main="Combined Wind Direction VS log PM2.5 Concentration", xlab="Combined Wind Direction", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iws), y = log(PM_US.Post), main="Cumulated Wind Speed VS log PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(precipitation), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iprec), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(TEMP), y = PM_US.Post, main="Temperature VS log PM2.5 Concentration", xlab="Temperature (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = month, y = log(PM_US.Post), main="Month VS log PM2.5 Concentration", xlab="Month", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = hour, y = log(PM_US.Post), main="Hour VS PM2.5 Concentration", xlab="Hour", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~as.factor(season),data=df, main="Season VS log PM2.5 Concentration", xlab="Season (Spring, Summer, Fall, Winter)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = DEWP, y = log(PM_US.Post), main="Dew Point VS log PM2.5 Concentration", xlab="Dew Point (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = HUMI, y = log(PM_US.Post), main="Humidity VS PM2.5 Concentration", xlab="Humidity (%)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = TEMP, y = log(PM_US.Post), main="Temperature VS log PM2.5 Concentration", xlab="Temperature (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~cbwd,data=df, main="Combined Wind Direction VS log PM2.5 Concentration", xlab="Combined Wind Direction", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iws), y = log(PM_US.Post), main="Cumulated Wind Speed VS log PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(precipitation), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iprec), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+reg_back1 <- step(reg1,direction="backward")
+reg2 = lm(log(PM_US.Post) ~ year + month + hour + as.factor(season) + DEWP +
+HUMI + PRES + TEMP + as.factor(cbwd) + log(Iws) + log(precipitation) +
+log(Iprec), data = df)
+reg2 = lm(log(PM_US.Post) ~ year + month + hour + as.factor(season) + DEWP +
+HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+summary(reg2)
+reg2 = lm(log(PM_US.Post) ~ year + month + hour + as.factor(season) + DEWP +
+HUMI + PRES + TEMP + as.factor(cbwd) + log(Iws) + precipitation +
+Iprec, data = df)
+View(df)
+View(df)
+reg2 = lm(log(PM_US.Post) ~ year + month + hour + as.factor(season) + DEWP +
+HUMI + PRES + TEMP + as.factor(cbwd) + log(Iws+1) + log(precipitation+1) +
+log(Iprec+1), data = df)
+summary(reg2)
+plot(x = log(Iws+1), y = log(PM_US.Post), main="Cumulated Wind Speed VS log PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(precipitation+1), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iprec+1), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iprec+1), y = PM_US.Post, main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = Iprec, y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iprec+1), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+summary(reg1)
+plot(x = month, y = log(PM_US.Post), main="Month VS log PM2.5 Concentration", xlab="Month", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = hour, y = log(PM_US.Post), main="Hour VS PM2.5 Concentration", xlab="Hour", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~as.factor(season),data=df, main="Season VS log PM2.5 Concentration", xlab="Season (Spring, Summer, Fall, Winter)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = DEWP, y = log(PM_US.Post), main="Dew Point VS log PM2.5 Concentration", xlab="Dew Point (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = HUMI, y = log(PM_US.Post), main="Humidity VS PM2.5 Concentration", xlab="Humidity (%)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = TEMP, y = log(PM_US.Post), main="Temperature VS log PM2.5 Concentration", xlab="Temperature (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~cbwd,data=df, main="Combined Wind Direction VS log PM2.5 Concentration", xlab="Combined Wind Direction", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iws+1), y = log(PM_US.Post), main="Cumulated Wind Speed VS log PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(precipitation+1), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iprec+1), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+View(df_some)
+View(df_some)
+View(df_incomplete)
+View(df_incomplete)
+sum(is.na(df$PM_US.Post))
+sum(is.na(df_some$PM_US.Post))
+plot(x = month, y = log(PM_US.Post), main="Month VS log PM2.5 Concentration", xlab="Month", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = hour, y = log(PM_US.Post), main="Hour VS PM2.5 Concentration", xlab="Hour", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~as.factor(season),data=df, main="Season VS log PM2.5 Concentration", xlab="Season (Spring, Summer, Fall, Winter)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = DEWP, y = log(PM_US.Post), main="Dew Point VS log PM2.5 Concentration", xlab="Dew Point (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = HUMI, y = log(PM_US.Post), main="Humidity VS PM2.5 Concentration", xlab="Humidity (%)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = TEMP, y = log(PM_US.Post), main="Temperature VS log PM2.5 Concentration", xlab="Temperature (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~cbwd,data=df, main="Combined Wind Direction VS log PM2.5 Concentration", xlab="Combined Wind Direction", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iws+0.01), y = log(PM_US.Post), main="Cumulated Wind Speed VS log PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(precipitation+0.01), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iprec+0.01), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iws+0.1), y = log(PM_US.Post), main="Cumulated Wind Speed VS log PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(precipitation+0.1), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iprec+0.1), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+reg2 = lm(log(PM_US.Post) ~ year + month + hour + as.factor(season) + DEWP +
+HUMI + PRES + TEMP + as.factor(cbwd) + log(Iws+0.1) + log(precipitation+0.1) +
+log(Iprec+0.1), data = df)
+summary(reg2)
+View(df)
+View(df)
+season.n = relevel(season, ref = "4")
+season.n = relevel(as.factor(season), ref = "4")
+month.n = month-1
+DEWP.c = DEWP - mean(DEWP)
+HUMI.c = HUMI - mean(HUMI)
+PRES.c = PRES - mean(PRES)
+# year: -2012, setting year 2012 as the baseline
+year.n = year - 2012
+# month: -1, setting January (1) as the baseline
+month.n = month-1
+# season: reset 4 (Winter) as the baseline. This way, it's consistant with the year, month & day baseline which would correspond to January 2012.
+season.n = relevel(as.factor(season), ref = "4")
+attach(df)
+library(arm)
+library(pROC)
+library(ggplot2)
+df_all = read.csv('datasets/ShanghaiPM20100101_20151231.csv')
+attach(df_all)
+# observations from year 2013-2015, removing PM_Jingan and PM_Xuhui
+df_some = df_all[year == 2012 | year == 2013 | year == 2014 | year == 2015,]
+df_some = df_some[, !(colnames(df_some) %in% c("PM_Jingan","PM_Xuhui"))]
+# incomplete observations
+df_incomplete = df_some[!complete.cases(df_some),]
+# decided to remove the missing cases beacuse many were missing data chunks from half a day - 2days, and since the weather varies quite a lot from day to day, we cannot really estimate these missing points from other points around it.
+# complete observations only
+df = df_some[complete.cases(df_some),]
+attach(df)
+plot(x = month, y = PM_US.Post, main="Month VS PM2.5 Concentration", xlab="Month", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = day, y = PM_US.Post, main="Day VS PM2.5 Concentration", xlab="Day", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = hour, y = PM_US.Post, main="Hour VS PM2.5 Concentration", xlab="Hour", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~as.factor(season),data=df, main="Season VS PM2.5 Concentration", xlab="Season (Spring, Summer, Fall, Winter)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = DEWP, y = PM_US.Post, main="Dew Point VS PM2.5 Concentration", xlab="Dew Point (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = HUMI, y = PM_US.Post, main="Humidity VS PM2.5 Concentration", xlab="Humidity (%)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = TEMP, y = PM_US.Post, main="Temperature VS PM2.5 Concentration", xlab="Temperature (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~cbwd,data=df, main="Combined Wind Direction VS PM2.5 Concentration", xlab="Combined Wind Direction", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = Iws, y = PM_US.Post, main="Cumulated Wind Speed VS PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = precipitation, y = PM_US.Post, main="Hourly Percipitation VS PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = Iprec, y = PM_US.Post, main="Cumulated Percipitation VS PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="PM2.5 Concentration (ug/m^3)")
+# make first basic linear regression with all continous variables, no transformation
+reg1= lm(PM_US.Post ~ year + month + day + hour + as.factor(season) +
+DEWP + HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+summary(reg1)
+# none of the variables are significantly unimportant
+# we could consider removing the days variable (p >0.3)
+#check for multicollinearity between all continous variables
+cont <- c(2:6, 8:11, 13:15)
+contVars = df[cont]
+cor(contVars)
+# multicollinearity (>0.8) between: pressure & dew point, pressure & temperature, dew point & temperature
+# multicollinear variables: pressure, dew point, temperature
+# fortunately, these variables are not messing up the standard errors, so we don't have to remove them
+# summary: after looking at multi-collinearity values bewteen variables, we can consider removing: pressure, dew point.
+# next step: We will see which multicollinearity variables we can remove by manually doing some f-tests.
+# we will manually use nested f-tests to see if some of the variables can be removed from our regression
+# variables to test: pressure, dew point, temperature, days
+# reg1= lm(PM_US.Post ~ year + month + day + hour + as.factor(season) +
+#   DEWP + HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+#   Iprec)
+# regression with no pressure variable
+reg_noPRES = lm(PM_US.Post ~ year + month + day + hour + as.factor(season) +
+DEWP + HUMI + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+# regression with no dew point variable
+reg_noDEWP = lm(PM_US.Post ~ year + month + day + hour + as.factor(season) +
+HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+#regression with no temperature
+reg_noTEMP = lm(PM_US.Post ~ year + month + day + hour + as.factor(season) +
+DEWP + HUMI + PRES + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+# regression with no days
+reg_noDAYS = lm(PM_US.Post ~ year + month + hour + as.factor(season) +
+DEWP + HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+# do ANOVA f-test on each of the regressions (VS original regression)
+anova(reg1, reg_noPRES)
+anova(reg1, reg_noDEWP)
+anova(reg1, reg_noTEMP)
+anova(reg1, reg_noDAYS)
+# the only variable we can remove is days
+# summary: the 'day' variable can be removed, as shown manually by f-tests
+# next step: try automatically removing variables by backwards selection
+# first backwards selection: removed 'day' variable
+reg_back1 <- step(reg1,direction="backward")
+summary(reg_back1)
+# anova shows large p-value, removing is OK
+anova(reg1, reg_back1)
+# second backwards selection
+reg_back2 <- step(reg_back1,direction="backward")
+summary(reg_back2)
+# no further variables removed, nothing smaller than the given AIC
+# as shown in the exploratory data analysis, we should do some transformations as many linear regression assumptions are violated
+# have to add 0.01 to transformed x-variables since we cannot log (0)
+# x-variables to transform (non-linearity): log(Iws+0.01), log(precipitation+0.01), log(Iprec+0.01)
+# y-varable to transform (non-constant variance): log(PM_US.Post)
+# try with these transformations
+plot(x = month, y = log(PM_US.Post), main="Month VS log PM2.5 Concentration", xlab="Month", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = hour, y = log(PM_US.Post), main="Hour VS PM2.5 Concentration", xlab="Hour", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~as.factor(season),data=df, main="Season VS log PM2.5 Concentration", xlab="Season (Spring, Summer, Fall, Winter)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = DEWP, y = log(PM_US.Post), main="Dew Point VS log PM2.5 Concentration", xlab="Dew Point (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = HUMI, y = log(PM_US.Post), main="Humidity VS PM2.5 Concentration", xlab="Humidity (%)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = TEMP, y = log(PM_US.Post), main="Temperature VS log PM2.5 Concentration", xlab="Temperature (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~cbwd,data=df, main="Combined Wind Direction VS log PM2.5 Concentration", xlab="Combined Wind Direction", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iws+0.1), y = log(PM_US.Post), main="Cumulated Wind Speed VS log PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(precipitation+0.1), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iprec+0.1), y = log(PM_US.Post), main="Hourly Percipitation VS log PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+# these transformations are not ideal but they're fine
+# overall, they fix the non-linear and non-constant variance violations we were concerned about
+reg2 = lm(log(PM_US.Post) ~ year + month + hour + as.factor(season) + DEWP +
+HUMI + PRES + TEMP + as.factor(cbwd) + log(Iws+0.1) + log(precipitation+0.1) +
+log(Iprec+0.1), data = df)
+summary(reg2)
+# some variables would be easier to interpret if mean centered, or have its values slightly changed in other ways
+# dew point, humidity, pressure: to mean-center. We can interpret weather with average dew point, humidity & pressure
+DEWP.c = DEWP - mean(DEWP)
+HUMI.c = HUMI - mean(HUMI)
+PRES.c = PRES - mean(PRES)
+# year: -2012, setting year 2012 as the baseline
+year.n = year - 2012
+# month: -1, setting January (1) as the baseline
+month.n = month-1
+# season: reset 4 (Winter) as the baseline. This way, it's consistant with the year, month & day baseline which would correspond to January 2012.
+season.n = relevel(as.factor(season), ref = "4")
+# with weather, we expect a lot of interaction variables since a lot of these weather factors impact one another
+# common sense: season&temperature, season&percipitation, hour&temperature
+#
+boxplot(PM_US.Post~year,data=df, main="Year VS PM2.5 Concentration", xlab="Year", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~month,data=df, main="Month VS PM2.5 Concentration", xlab="Month", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~day,data=df, main="Day VS PM2.5 Concentration", xlab="Day", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~hour,data=df, main="Hour VS PM2.5 Concentration", xlab="Hour", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = DEWP, y = PM_US.Post, main="Dew Point VS PM2.5 Concentration", xlab="Dew Point (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = HUMI, y = PM_US.Post, main="Humidity VS PM2.5 Concentration", xlab="Humidity (%)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = TEMP, y = PM_US.Post, main="Tempeature VS PM2.5 Concentration", xlab="Temperature (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~TEMP,data=df, main="Temperature VS PM2.5 Concentration", xlab="Temperature (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+knitr::opts_chunk$set(echo = TRUE)
+summary(cars)
+plot(pressure)
+boxplot(PM_US.Post~month,data=df, main="Month VS PM2.5 Concentration", xlab="Month", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = hour, y = PM_US.Post, main="Hour VS PM2.5 Concentration", xlab="Hour", ylab="PM2.5 Concentration (ug/m^3)")
+reg1= lm(PM_US.Post ~ year + as.factor(month) + as.factor(day) + as.factor(hour) + as.factor(season) +
+DEWP + HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+reg1= lm(PM_US.Post ~ year + as.factor(month) + as.factor(day) + as.factor(hour) + as.factor(season) +
+DEWP + HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+summary(reg1)
+attach(df)
+# make first basic linear regression with all continous variables, no transformation
+reg1= lm(PM_US.Post ~ year + as.factor(month) + as.factor(day) + as.factor(hour) + as.factor(season) +
+DEWP + HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation +
+Iprec, data = df)
+summary(reg1)
+boxplot(PM_US.Post~as.factor(season),data=df, main="Season VS PM2.5 Concentration", xlab="Season (Spring, Summer, Fall, Winter)", ylab="PM2.5 Concentration (ug/m^3)")
+str(df)
+table(df$season)
+```{r import, echo=FALSE}

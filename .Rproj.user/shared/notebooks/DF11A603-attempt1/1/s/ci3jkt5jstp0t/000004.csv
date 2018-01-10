@@ -1,0 +1,6 @@
+"2","Error in names(frame)[names(frame) == ""x""] <- name : 
+  names() applied to a non-vector
+"
+"2","Error in names(frame)[names(frame) == ""x""] <- name : 
+  names() applied to a non-vector
+"

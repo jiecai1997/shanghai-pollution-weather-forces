@@ -1,0 +1,486 @@
+---
+title: "final project"
+output: html_document
+---
+
+####1. Import packages
+```{r import & read in file}
+library(lattice)
+
+df_all = read.csv('datasets/ShanghaiPM20100101_20151231.csv')
+attach(df_all)
+```
+
+####2. We want to subset the dataset, since here are variables and values that we don't need to include.
+```{r data subset, echo=FALSE}
+# we leave out data values from years 2010-2011, since there were many incomplete datapoints at those times.
+df_some = df_all[year == 2012 | year == 2013 | year == 2014 | year == 2015,]
+
+# we remove PM2.5 AQI measurements from Jingan and Xuhui, since measurements from the US consulate are more consistant and reliable.
+df_some = df_some[, !(colnames(df_some) %in% c("PM_Jingan","PM_Xuhui"))]
+# this leaves us with 35064/52584 observations
+
+# take a peek at incomplete observations
+df_incomplete = df_some[!complete.cases(df_some),]
+
+# decided to remove the missing cases beacuse many were missing data chunks from half a day - 2days, and since the weather varies quite a lot from day to day, we cannot really estimate these missing points from other points around it.
+
+# finalize dataset that we're working with so that it contains complete observations only
+df = df_some[complete.cases(df_some),]
+# this leaves us with 31804/35064 observations
+
+# reattach variables
+detach(df_all)
+attach(df)
+```
+Summary: cleaning data until we get a dataset we're satisfied working with
+Next step: start EDA
+
+####3. Summary statistics
+```{r summary statistics}
+summary(df[2:15])
+```
+
+####4. explanatory data analysis with each variable against outcome variable, PM_US.Post
+```{r initial exploratory data analysis}
+plot(x = year, y = PM_US.Post, main="Year VS PM2.5 Concentration", xlab="Year", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~month,data=df, main="Month VS PM2.5 Concentration", xlab="Month", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~day,data=df, main="Day VS PM2.5 Concentration", xlab="Day", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~hour,data=df, main="Hour VS PM2.5 Concentration", xlab="Hour", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~as.factor(season),data=df, main="Season VS PM2.5 Concentration", xlab="Season (Spring, Summer, Fall, Winter)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = DEWP, y = PM_US.Post, main="Dew Point VS PM2.5 Concentration", xlab="Dew Point (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = HUMI, y = PM_US.Post, main="Humidity VS PM2.5 Concentration", xlab="Humidity (%)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = PRES, y = PM_US.Post, main="Pressure VS PM2.5 Concentration", xlab="Pressure (hPa)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = TEMP, y = PM_US.Post, main="Temperature VS PM2.5 Concentration", xlab="Temperature (ºC)", ylab="PM2.5 Concentration (ug/m^3)")
+boxplot(PM_US.Post~cbwd,data=df, main="Combined Wind Direction VS PM2.5 Concentration", xlab="Combined Wind Direction", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = Iws, y = PM_US.Post, main="Cumulated Wind Speed VS PM2.5 Concentration", xlab="Cumulated wind speed (m/s)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = precipitation, y = PM_US.Post, main="Hourly Percipitation VS PM2.5 Concentration", xlab="Hourly Precipitation (mm)", ylab="PM2.5 Concentration (ug/m^3)")
+plot(x = Iprec, y = PM_US.Post, main="Cumulated Percipitation VS PM2.5 Concentration", xlab="Cumulated precipitation (mm)", ylab="PM2.5 Concentration (ug/m^3)")
+```
+Summary: Did some basic exploratory data analysis.
+Next step: Make basic regression of above variables.
+
+####5. Most Basic Linear Regression
+```{r basic linear regression}
+# make first basic linear regression with all continous variables, no transformation
+reg1= lm(PM_US.Post ~ year + as.factor(month) + as.factor(day) + as.factor(hour) + as.factor(season) + 
+    DEWP + HUMI + PRES + TEMP + as.factor(cbwd) + Iws + precipitation + Iprec, data = df)
+summary(reg1)
+```
+Intuitively, we can remove the day variable since day of the month shouldn't really correlate with PM levels.
+We also see that some of the season coefficients are NA because of its close relationship with month. We would also want to remove one of these. 
+
+####6. Re-adjusting Variables
+```{r re-adjusting variables}
+# some variables would be easier to interpret if mean centered, or have its values slightly changed in other ways
+
+# dew point, humidity, pressure: to mean-center. We can interpret weather with average dew point, humidity & pressure
+DEWP.c = DEWP - mean(DEWP)
+HUMI.c = HUMI - mean(HUMI)
+PRES.c = PRES - mean(PRES)
+TEMP.c = TEMP - mean(TEMP)
+
+# year: -2012, setting year 2012 as the baseline
+year.n = year - 2012
+
+# hour: changing it to a binary categorical variable, rush hour (7-10, 16-19 according to Shanghai Rush Hour Highway Regulations) & non-rush hour
+n = nrow(df)
+
+rush <- c(7:10, 16:19)
+
+rushhour = rep(0, n)
+rushhour[hour %in% rush] = 1
+
+nonrushhour = rep(1, n)
+nonrushhour[hour %in% rush] = 0
+```
+Summary: Adjusted some variables to aid interpretation
+Next steps: Fit linear regression with the above adjusted variables, and either seasons or months variable depending on which one fits better.
+
+#### 7.Regression with adjusted variables
+```{r regression with adjusted variables}
+# regression with adjusted values & month variable, no season variable
+# R^2: 0.3013
+reg2 = lm(PM_US.Post ~ year.n + as.factor(month) +  rushhour + nonrushhour +
+    DEWP.c + HUMI.c + PRES.c + TEMP.c + as.factor(cbwd) + Iws + precipitation + Iprec, data = df)
+summary(reg2)
+
+# regression with adjusted values & season variable, no month variable
+# R^2: 0.2591
+reg3 = lm(PM_US.Post ~ year.n + as.factor(season) +  rushhour + nonrushhour +
+    DEWP.c + HUMI.c + PRES.c + TEMP.c + as.factor(cbwd) + Iws + precipitation + Iprec, data = df)
+summary(reg3)
+```
+The regression with months leads to a better model, as indicated by a 5% higher Rsquared value.Intuitively, using a month variable instead of a season variable would lead to more precise predictions. We will get rid of the season variable and just use months as a categorical variable.
+
+####8.Check for multicollinearity between all continuous variables
+```{r multi-collinearity}
+# generate collinearity matrix between all continuous variables
+cont <- c(2, 8:11, 13:15)
+contVars = df[cont]
+cor(contVars)
+
+# multicollinearity (>0.8) between: pressure & dew point, pressure & temperature, dew point & temperature
+# multicollinear variables: pressure, dew point, temperature
+# this makes intuitive sense because the three weather factors are almost direct factors of each other
+# fortunately, these variables are not messing up the standard errors, so we don't have to remove them
+```
+Summary: after looking at multi-collinearity values bewteen variables, we can consider removing: pressure, dew point, temperature. However, they do not cause an inflation in SE so we don't have to worry too much.
+Next step: We will see which multicollinearity variables we can remove by manually doing some f-tests.
+
+####9. Try manually removing some variables through f-test
+``` {r nested f-test}
+# we will manually use nested f-tests to see if some of the variables can be removed from our regression
+# variables to test: pressure, dew point, temperature, days
+
+# regression with no pressure variable
+reg_noPRES = lm(PM_US.Post ~ year.n + as.factor(month) +  rushhour + nonrushhour +
+    DEWP.c + HUMI.c + TEMP + as.factor(cbwd) + Iws + precipitation + Iprec, data = df)
+# regression with no dew point variable
+reg_noDEWP = lm(PM_US.Post ~ year.n + as.factor(month) +  rushhour + nonrushhour +
+    HUMI.c + PRES.c + TEMP + as.factor(cbwd) + Iws + precipitation + Iprec, data = df)
+#regression with no temperature
+reg_noTEMP = lm(PM_US.Post ~ year.n + as.factor(month) +  rushhour + nonrushhour +
+    DEWP.c + HUMI.c + PRES.c + as.factor(cbwd) + Iws + precipitation + Iprec, data = df)
+
+# do ANOVA f-test on each of the regressions (VS original regression)
+anova(reg2, reg_noPRES)
+anova(reg2, reg_noDEWP)
+anova(reg2, reg_noTEMP)
+# all of them have small p-values, so they are all important vairables in the model. We cannot remove them.
+```
+Summary: we aren't able to manually remove any of the multicollinear variables by f-tests
+Next step: try automatically removing variables by backwards selection
+
+####10. Try removing variables by backwards selection
+```{r backwards selection}
+# first backwards selection: removed baseline nonrushhour variable
+reg4 <- step(reg2,direction="backward") 
+summary(reg4)
+# since no real variables have been removed, the two models are the same. the anova p-value is 0, indicates no change
+anova(reg2, reg4)
+
+# no further variables removed (other than clarifying baseline for nonrushhour variable), nothing smaller than the given AIC
+```
+
+####11. Try tranformations for variables
+```{r transformations}
+# as shown in the exploratory data analysis, we should do some transformations as many linear regression assumptions are violated
+# have to add 0.1 to transformed x-variables since we cannot log (0)
+# x-variables to transform (due to non-linearity): log(Iws+0.1), log(precipitation+0.1), log(Iprec+0.1)
+Iws.log = log(Iws+0.1)
+precipitation.log = log(precipitation+0.1)
+Iprec.log = log(Iprec+0.1)
+
+# x-variables to square (due to non-linearity)
+DEWP.c.2 = DEWP.c^2
+HUMI.c.2 = HUMI.c^2
+PRES.c.2 = PRES.c^2
+TEMP.c.2 = TEMP.c^2
+
+# y-varable to transform (due to non-constant variance): log(PM_US.Post)
+PM_US.Post.log = log(PM_US.Post)
+
+# try with these transformations
+boxplot(log(PM_US.Post)~month,data=df, main="Month VS log PM2.5 Concentration", xlab="Month", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~rushhour,data=df, main="Rush Hour VS log PM2.5 Concentration", xlab="Rush Hour", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = DEWP.c.2 + DEWP.c, y = log(PM_US.Post), main="Dew Point Centered VS log PM2.5 Concentration", xlab="Dew Point Centered (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = HUMI.c.2 + HUMI.c, y = log(PM_US.Post), main="Humidity Centered VS PM2.5 Concentration", xlab="Humidity Centered (%)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = PRES.c.2 + PRES.c, y = log(PM_US.Post), main="Pressure Centered VS PM2.5 Concentration", xlab="Pressure Centered (hPa)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = TEMP.c.2 + TEMP.c, y = log(PM_US.Post), main="Temperature VS log PM2.5 Concentration", xlab="Temperature (ºC)", ylab="log PM2.5 Concentration (ug/m^3)")
+boxplot(log(PM_US.Post)~cbwd,data=df, main="Combined Wind Direction VS log PM2.5 Concentration", xlab="Combined Wind Direction", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iws+0.1), y = log(PM_US.Post), main="log Cumulated Wind Speed VS log PM2.5 Concentration", xlab="log Cumulated wind speed (m/s)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(precipitation+0.1), y = log(PM_US.Post), main="log Hourly Percipitation VS log PM2.5 Concentration", xlab="log Hourly Precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+plot(x = log(Iprec+0.1), y = log(PM_US.Post), main="log Cumulated Percipitation VS log PM2.5 Concentration", xlab="log Cumulated precipitation (mm)", ylab="log PM2.5 Concentration (ug/m^3)")
+# these transformations look ok. Let's test their impact with more regression models.
+```
+Summary: Made transformation variables as suggested by initial EDAs.
+Next step: Put them into new regressions.
+
+####12. Make regressions with these tranformations variables
+```{r regression with transformation}
+# regression with (log y, no x tranformations)
+# R^2: 0.4012
+reg5 = lm(PM_US.Post.log ~ year.n + as.factor(month) + rushhour + DEWP.c + 
+    HUMI.c + PRES.c + TEMP.c + as.factor(cbwd) + Iws + precipitation + 
+    Iprec, data = df)
+summary(reg5)
+
+# regression with (log y, and just x^2 tranformations)
+# R^2: 0.409
+reg6 = lm(PM_US.Post.log ~ year.n + as.factor(month) + rushhour + DEWP.c + DEWP.c.2 +
+    HUMI.c + HUMI.c.2 + PRES.c + PRES.c.2 + TEMP.c + TEMP.c.2 + as.factor(cbwd) + Iws + precipitation + 
+    Iprec, data = df)
+summary(reg6)
+
+# regression with log y & log x
+# R^2: 0.3998
+reg7 = lm(PM_US.Post.log ~ year.n + as.factor(month) + rushhour + DEWP.c + 
+    HUMI.c + PRES.c + TEMP.c + as.factor(cbwd) + Iws.log + precipitation.log + 
+    Iprec.log, data = df)
+summary(reg7)
+
+# regression with log y, log x and x^2
+reg8 = lm(PM_US.Post.log ~ year.n + as.factor(month) + rushhour + DEWP.c + DEWP.c.2 +
+    HUMI.c + HUMI.c.2 + PRES.c + PRES.c.2 + TEMP.c + TEMP.c.2 + as.factor(cbwd) + Iws.log + precipitation.log + 
+    Iprec.log, data = df)
+summary(reg8)
+# R^2: 0.409
+
+# the higher R-squared value from this regression implies that these transformed models are better fits than the previous model
+# within the transformed regressions above, there's not much difference in the R^2 values. for interpretation purposes, we will want to work with regression 5 (log y, no x transformations) which will make explaining co-efficients easier. But we need to check with residual plots.
+
+# sumamry: fitted regression with tranformed variables: logy, x^2 (some), logx (some)
+# next step: check for interaction variables
+```
+
+####12. Look at residual plots for these tranformed variables VS regression
+```{r regression residual plots}
+# we want to do residual plots for each of the regressions above (reg 5,6,7,8)
+
+# regression 5 (log y, no x transformations)
+# variables that didn't need transformations
+plot(y = reg5$residual, x=year,  main = "Reg 5, Year VS Residuals", ylab = "Residuals")
+boxplot(reg5$residual ~ as.factor(month), main = "Reg 5, Plot of Residuals", ylab = "Residuals")
+boxplot(reg5$residual ~ rushhour, main = "Reg 5, Rushhour of Residuals", ylab = "Residuals")
+boxplot(reg5$residual ~ as.factor(cbwd), main = "Reg 5, Combined Wind Direction of Residuals", ylab = "Residuals")
+# these residuals look fine
+
+# variables possibly to be squared
+plot(y = reg5$residual, x=DEWP.c, main = "Dew Point VS Residuals", ylab = "Residuals")
+plot(y = reg5$residual, x=HUMI.c, main = "Humidity VS Residuals", ylab = "Residuals")
+plot(y = reg5$residual, x=PRES.c, main = "Pressure VS Residuals", ylab = "Residuals")
+plot(y = reg5$residual, x=TEMP.c, main = "Temperature VS Residuals", ylab = "Residuals")
+# these are alright
+
+# variables possiblly to be logged
+plot(y = reg7$residual, x=Iws, main = "Cumulative Wind Speed VS Residuals", ylab = "Residuals")
+plot(y = reg7$residual, x=precipitation,  main = "Hourly Precipitation VS Residuals", ylab = "Residuals")
+plot(y = reg7$residual, x=Iprec,  main = "Cumulative Precipitation VS Residuals", ylab = "Residuals")
+# these don't look great, definately need some sort of transformation
+
+# x^2 variables 
+plot(y = reg6$residual, x=DEWP.c + DEWP.c.2,  main = "Dew Point^2 VS Residuals", ylab = "Residuals")
+plot(y = reg6$residual, x=HUMI.c + HUMI.c.2,  main = "Humidity^2 VS Residuals", ylab = "Residuals")
+plot(y = reg6$residual, x=PRES.c + PRES.c.2,  main = "Pressure^2 VS Residuals", ylab = "Residuals")
+plot(y = reg6$residual, x=TEMP.c + TEMP.c.2,  main = "Temperature^2 VS Residuals", ylab = "Residuals")
+# these are worse than the original variables without transformation
+
+# log x variables
+plot(y = reg7$residual, x=Iws.log,  main = "log Cumulative Wind Speed VS Residuals", ylab = "Residuals")
+plot(y = reg7$residual, x=precipitation.log,  main = "log Hourly Precipitation VS Residuals", ylab = "Residuals")
+plot(y = reg7$residual, x=Iprec.log,  main = "log Cumulative Precipitation VS Residuals", ylab = "Residuals")
+# these are much better than how the variable looked without any tranformations
+```
+Summary: Residual plots look good for x and logx terms.
+Next Step: See if there are interactions
+
+####13. Test for Interactions
+```{r interaction variables}
+# we can use xyplots to eye-ball possible interactions, testing variables as conditionals of various categorical variables 
+
+# lets see if any variables interact with year
+xyplot(PM_US.Post.log ~ as.factor(month) | year)
+xyplot(PM_US.Post.log ~ rushhour | year)
+xyplot(PM_US.Post.log ~ DEWP.c | year)
+xyplot(PM_US.Post.log ~ HUMI.c | year)
+xyplot(PM_US.Post.log ~ PRES.c | year)
+xyplot(PM_US.Post.log ~ TEMP | year)
+xyplot(PM_US.Post.log ~ as.factor(cbwd) | year)
+xyplot(PM_US.Post.log ~ Iws.log | year)
+xyplot(PM_US.Post.log ~ precipitation.log | year)
+xyplot(PM_US.Post.log ~ Iprec.log | year)
+# no interactions with year
+
+# lets see if any variables interact with month
+xyplot(PM_US.Post.log ~ year | as.factor(month))
+xyplot(PM_US.Post.log ~ rushhour | as.factor(month))
+xyplot(PM_US.Post.log ~ DEWP.c | as.factor(month))
+xyplot(PM_US.Post.log ~ HUMI.c | as.factor(month))
+xyplot(PM_US.Post.log ~ PRES.c | as.factor(month))
+xyplot(PM_US.Post.log ~ TEMP | as.factor(month))
+xyplot(PM_US.Post.log ~ as.factor(cbwd) | as.factor(month))
+xyplot(PM_US.Post.log ~ Iws.log | as.factor(month))
+xyplot(PM_US.Post.log ~ precipitation.log | as.factor(month))
+xyplot(PM_US.Post.log ~ Iprec.log | as.factor(month))
+# no interactions with month
+
+# lets see if any variables interact with rushhour
+xyplot(PM_US.Post.log ~ year | rushhour)
+xyplot(PM_US.Post.log ~ as.factor(month) | rushhour)
+xyplot(PM_US.Post.log ~ DEWP.c | rushhour)
+xyplot(PM_US.Post.log ~ HUMI.c | rushhour)
+xyplot(PM_US.Post.log ~ PRES.c | rushhour)
+xyplot(PM_US.Post.log ~ TEMP | rushhour)
+xyplot(PM_US.Post.log ~ as.factor(cbwd) | rushhour)
+xyplot(PM_US.Post.log ~ Iws.log | rushhour)
+xyplot(PM_US.Post.log ~ precipitation.log | rushhour)
+xyplot(PM_US.Post.log ~ Iprec.log | rushhour)
+# no interactions with rushhour
+
+# lets see if any variables interact with humidity
+# split humidity into categorical variable with 6 levels
+xyplot(PM_US.Post.log ~ year | cut(HUMI.c, 6))
+xyplot(PM_US.Post.log ~ as.factor(month) | cut(HUMI.c, 6))
+xyplot(PM_US.Post.log ~ rushhour | cut(HUMI.c, 6))
+xyplot(PM_US.Post.log ~ DEWP.c | cut(HUMI.c, 6))
+xyplot(PM_US.Post.log ~ PRES.c | cut(HUMI.c, 6))
+xyplot(PM_US.Post.log ~ TEMP | cut(HUMI.c, 6))
+xyplot(PM_US.Post.log ~ as.factor(cbwd) | cut(HUMI.c, 6))
+xyplot(PM_US.Post.log ~ Iws.log | cut(HUMI.c, 6))
+xyplot(PM_US.Post.log ~ precipitation.log | cut(HUMI.c, 6))
+xyplot(PM_US.Post.log ~ Iprec.log | cut(HUMI.c, 6))
+#???????
+
+# lets see if any variables interact with temperature
+# split temperature  into categorical variable with 6 levels
+xyplot(PM_US.Post.log ~ year | cut(TEMP, 6))
+xyplot(PM_US.Post.log ~ as.factor(month) | cut(TEMP, 6))
+xyplot(PM_US.Post.log ~ rushhour | cut(TEMP, 6))
+xyplot(PM_US.Post.log ~ DEWP.c | cut(TEMP, 6))
+xyplot(PM_US.Post.log ~ HUMI.c | cut(TEMP, 6))
+xyplot(PM_US.Post.log ~ PRES.c | cut(TEMP, 6))
+xyplot(PM_US.Post.log ~ as.factor(cbwd) | cut(TEMP, 6))
+xyplot(PM_US.Post.log ~ Iws.log | cut(TEMP, 6))
+xyplot(PM_US.Post.log ~ precipitation.log | cut(TEMP, 6))
+xyplot(PM_US.Post.log ~ Iprec.log | cut(TEMP, 6))
+# we can just use the temperature variable to account for pressure & dew point
+
+
+# lets see if any variables interact with combined wind direction
+xyplot(PM_US.Post.log ~ year | as.factor(cbwd))
+xyplot(PM_US.Post.log ~ as.factor(month) | as.factor(cbwd))
+xyplot(PM_US.Post.log ~ rushhour | as.factor(cbwd))
+xyplot(PM_US.Post.log ~ DEWP.c | as.factor(cbwd))
+xyplot(PM_US.Post.log ~ HUMI.c | as.factor(cbwd))
+xyplot(PM_US.Post.log ~ PRES.c | as.factor(cbwd))
+xyplot(PM_US.Post.log ~ TEMP | as.factor(cbwd))
+xyplot(PM_US.Post.log ~ Iws.log | as.factor(cbwd))
+xyplot(PM_US.Post.log ~ precipitation.log | as.factor(cbwd))
+xyplot(PM_US.Post.log ~ Iprec.log | as.factor(cbwd))
+# none
+
+# lets see if any variables interact with log cumulated wind speed
+xyplot(PM_US.Post.log ~ year | cut(Iws.log, 6))
+xyplot(PM_US.Post.log ~ as.factor(month) | cut(Iws.log, 6))
+xyplot(PM_US.Post.log ~ rushhour | cut(Iws.log, 6))
+xyplot(PM_US.Post.log ~ DEWP.c | cut(Iws.log, 6))
+xyplot(PM_US.Post.log ~ HUMI.c | cut(Iws.log, 6))
+xyplot(PM_US.Post.log ~ PRES.c | cut(Iws.log, 6))
+xyplot(PM_US.Post.log ~ TEMP | cut(Iws.log, 6))
+xyplot(PM_US.Post.log ~ as.factor(cbwd) | cut(Iws.log, 6))
+xyplot(PM_US.Post.log ~ precipitation.log | cut(Iws.log, 6))
+xyplot(PM_US.Post.log ~ Iprec.log | cut(Iws.log, 6))
+# none
+
+# lets see if any variables interact with log hourly precipitation
+xyplot(PM_US.Post.log ~ year | cut(precipitation.log, 6))
+xyplot(PM_US.Post.log ~ as.factor(month) | cut(precipitation.log, 6))
+xyplot(PM_US.Post.log ~ rushhour | cut(precipitation.log, 6))
+xyplot(PM_US.Post.log ~ DEWP.c | cut(precipitation.log, 6))
+xyplot(PM_US.Post.log ~ HUMI.c | cut(precipitation.log, 6))
+xyplot(PM_US.Post.log ~ PRES.c | cut(precipitation.log, 6))
+xyplot(PM_US.Post.log ~ TEMP | cut(precipitation.log, 6))
+xyplot(PM_US.Post.log ~ as.factor(cbwd) | cut(precipitation.log, 6))
+xyplot(PM_US.Post.log ~ Iws.log | cut(precipitation.log, 6))
+xyplot(PM_US.Post.log ~ precipitation.log | cut(precipitation.log, 6))
+xyplot(PM_US.Post.log ~ Iprec.log | cut(precipitation.log, 6))
+# none
+
+# lets see if any variables interact with log cumulated precipitation
+xyplot(PM_US.Post.log ~ year | cut(Iprec.log, 6))
+xyplot(PM_US.Post.log ~ as.factor(month) | cut(Iprec.log, 6))
+xyplot(PM_US.Post.log ~ rushhour | cut(Iprec.log, 6))
+xyplot(PM_US.Post.log ~ DEWP.c | cut(Iprec.log, 6))
+xyplot(PM_US.Post.log ~ HUMI.c | cut(Iprec.log, 6))
+xyplot(PM_US.Post.log ~ PRES.c | cut(Iprec.log, 6))
+xyplot(PM_US.Post.log ~ TEMP | cut(Iprec.log, 6))
+xyplot(PM_US.Post.log ~ as.factor(cbwd) | cut(Iprec.log, 6))
+xyplot(PM_US.Post.log ~ Iws.log | cut(Iprec.log, 6))
+xyplot(PM_US.Post.log ~ precipitation.log | cut(Iprec.log, 6))
+# none
+```
+Summary: after eye-balling for possible interaction effects amongst almost all of the variables, there doesn't seem to be any interaction effects. No need to make interaction variables.
+Next step: Make final regression and interpret coefficients
+
+####14. Final Regression & Coefficient Interpretations
+```{r final regression & coefficient interpretations}
+# for the final regression, we want to use 
+regFINAL = reg7
+summary(regFINAL)
+
+#95% CI for each of the variables, exponentiated since we logged the y-values
+
+# to interpret log y, x - % change in y with unit increase in x
+exp(coefficients(regFINAL))
+exp(confint(regFINAL))
+
+# to interpret log y, log x - % chance in y with 10% change in x
+1.10^(coefficients(regFINAL))
+1.10^(confint(regFINAL))
+# no need to test residuals again since we did so already with the same regression previously.
+```
+lm(formula = PM_US.Post.log ~ year + as.factor(month) + rushhour + DEWP.c + HUMI.c + PRES.c + TEMP.c + as.factor(cbwd) + Iws.log + precipitation.log + Iprec.log, data = df)
+
+####Baseline:
+- Year 2012
+- Janurary
+- Non-rushhour
+- Average dew point
+- Average humidity
+- Average pressure
+- Average temperature
+- No noticable winds in any direction
+- No wind
+- No hourly precipipation
+- No cumulated precipitation
+
+####Coefficients:
+For all of the coefficients below, we are 95% that the values will fall between the values generated by the 95% confidence intervals for each of the coefficients above. (eg. We are 95% confident that with each passing year, we expect the PM2.5 concentration levels to between 99.15% and 100.41% of the previous year.)
+
+Intercept - For an average day as described in the baseline above, we except the PM2.5 Concentration to be 81.87ug/m^3 (95% CI: 77.32, 86.69)
+
+year.n - With each passing year, holding all else contant, we expect the PM2.5 Concentration to be 99.78% of the previous year (95% (95% CI: 99.15%, 100.41%)
+as.factor(month)2 - Holding all else constant, we expect the the average PM2.5 Concentration in Feburary to be 77.17% of Janurary (95% CI: 75.15%, 79.41%)
+as.factor(month)3 - Holding all else constant, we expect the the average PM2.5 Concentration in March to be 73.44% of Janurary (95% CI: 71.00%, 75.97%)
+as.factor(month)4 - Holding all else constant, we expect the the average PM2.5 Concentration in April to be 62.99% of Janurary (95% CI: 60.53%, 65.55%)
+as.factor(month)5 - Holding all else constant, we expect the the average PM2.5 Concentration in May to be 54.92% of Janurary (95% CI: 52.51%, 57.45%)
+as.factor(month)6 - Holding all else constant, we expect the the average PM2.5 Concentration in June to be 36.57% of Janurary (95% CI: 34.74%, 38.50%)
+as.factor(month)7 - Holding all else constant, we expect the the average PM2.5 Concentration in July to be 21.09% of Janurary (95% CI: 19.89%, 22.37%)
+as.factor(month)8 - Holding all else constant, we expect the the average PM2.5 Concentration in August to be 20.04% of Janurary (95% CI: 18.94%, 21.21%)
+as.factor(month)9 - Holding all else constant, we expect the the average PM2.5 Concentration in September to be 29.60% of Janurary (95% CI: 28.15%, 31.12%)
+as.factor(month)10 - Holding all else constant, we expect the the average PM2.5 Concentration in September to be 44.75% of Janurary (95% CI: 42.84%, 31.12%)
+as.factor(month)11 - Holding all else constant, we expect the the average PM2.5 Concentration in September to be 71.34% of Janurary (95% CI: 68.78%, 74.01%)
+as.factor(month)12 - Holding all else constant, we expect the the average PM2.5 Concentration in September to be 98.64% of Janurary (95% CI: 95.44%, 101.95%)
+rushhour - Holding all else constant, we expect the the average PM2.5 Concentration during rush hours to be 105.58% of that during non-rush hours (95% CI: 104.05%, 107.14%)
+DEWP.c - Holding all else constant, we expect the the average PM2.5 Concentration to be 104.53% for every 1ºC increase in dew point. (95% CI: 104.05%, 107.14%)
+HUMI.c - Holding all else constant, we expect the the average PM2.5 Concentration to be 98.83% for every 1% increase in humidity. (95% CI: 98.61%, 99.06%)
+PRES.c - Holding all else constant, we expect the the average PM2.5 Concentration to be 98.75% for every 1hPa increase in presssure. (95% CI: 98.61%, 99.06%)
+TEMP.c - Holding all else constant, we expect the the average PM2.5 Concentration to be 96.71% for every 1ªC increase in temperature. (95% CI: 95.91%, 97.52%)
+as.factor(cbwd)NE - Holding all else constant, we expect the the average PM2.5 Concentration for Northeastern winds to be 94.30% of non-directional winds. (95% CI: 91.36%, 99.78%)
+as.factor(cbwd)NW - Holding all else constant, we expect the the average PM2.5 Concentration for Northwestern winds to be 153.36% of non-directional winds. (95% CI: 146.63%, 160.40%)
+as.factor(cbwd)SE - Holding all else constant, we expect the the average PM2.5 Concentration for Southeastern winds to be 94.30% of non-directional winds. (95% CI: 90.21%, 98.59%)
+as.factor(cbwd)SW - Holding all else constant, we expect the the average PM2.5 Concentration for Southwestern winds to be 131.26% of non-directional winds. (95% CI: 125.40%, 137.40%)
+Iws.log - For every 10% increase in combined wind speed, holding all else constant, we expect the PM2.5 Concentration to be 98.97% of its original value. (95% CI: 98.92%, 99.02%)
+precipitation.log - For every 10% increase in hourly precipitation, holding all else constant, we expect the PM2.5 Concentration to be 100.29% of its original value (95% CI: 100.07% 100.51%)
+Iprec.log - For every 10% increase in cumulated precipitation, holding all else constant, we expect the PM2.5 Concentration to be 98.83% of its original value (95% CI: 98.70% 98.97%)
+
+####Overall:
+- These doesn't seem to be a big difference in average PM levels with an increase in years, a topic I know a lot of people are concerned about.
+
+- In terms of seasons and months, the PM2.5 levels are significantly higher in winter months, and significantly lower during summer months, with July being the least polluted month and Janurary (baseline) being the most polluted month.
+
+- Dew point is positively correlated with PM2.5 levels, while humidity, pressure and temperature are all negatively correlated with PM2.5 levels.
+
+- Eastern winds leads to a slight decrease in PM2.5 levels, while Western winds lead to a great increase in PM2.5 levels, all in comparion to non-directional winds.
+
+- Cumulated wind speeds and percipitaiton levels cause a slight decrease in PM2.5 levels, while hourly precipitations cause a slight increase in PM2.5 levels.
+
+####Model Limitations & Questionable Parts:
+- It was difficult to decide whether to treat years as a continuous or a categorical variable, espeically given the few amount of years that were in this data. In the end, I treated it as a continuous variable because I wanted to answer a popular question as to whether "pollution levels got better or worse over the years". We would be able to answer this question a lot better if we had more years of data.
+
+- We were not able to fill in the missing data because of the data's context. The numbers were definately not missing at random, as numbers were missing by chunks of hours or even days. Furthermore, because various aspects of weather vary a lot day to day, we cannot really fill in missing weather data by depending purely on other similar weather factors. 
+
+- Though the dataset is pretty much a time series, for my model I had to ignore that aspect to make sure I based my analysis of PM2.5 levels based purely on the values of different x variables without respect to time. In comparison, many of these variables can be measured as a change over time if treated like a time series.
+
+- I was very surprised at the coefficients for combined wind directions. Shanghai borders the Yellow Sea on the city's east, while the rest of the country lies on its West. Intuitively, I would expect winds blowing from East to West to decrease PM2.5 levels since it's sweeping in clearn air from the oceans, while West to East winds to increase pollution levels as it comes from other polluted cities in China.

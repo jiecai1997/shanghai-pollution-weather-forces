@@ -1,0 +1,3 @@
+"0","# with weather, we expect a lot of interaction variables since a lot of these weather factors impact one another"
+"0","# common sense: season&temperature, season&percipitation, hour&temperature"
+"0","# "
